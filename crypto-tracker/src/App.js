@@ -4,28 +4,73 @@ import "./App.css";
 
 function App() {
   const [cryptoData, setCryptoData] = useState([]);
+  const [sortOrder, setSortOrder] = useState("market_cap_desc");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    getCryptoData()
-      .then((response) => {
-        setCryptoData(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching the data", error);
-      });
-  }, []);
+    const fetchData = () => {
+      getCryptoData()
+        .then((response) => {
+          setCryptoData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching the data", error);
+        });
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+
+    return () => clearInterval(interval);
+  }, [sortOrder]);
+
+  const handleSortChange = (event) => {
+    setSortOrder(event.target.value);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
+  };
+
+  const filteredCryptoData = cryptoData.filter((crypto) =>
+    crypto.name.toLowerCase().includes(searchTerm)
+  );
+
+  const sortedCryptoData = [...filteredCryptoData].sort((a, b) => {
+    if (sortOrder === "market_cap_desc") {
+      return b.market_cap - a.market_cap;
+    } else if (sortOrder === "price_desc") {
+      return b.current_price - a.current_price;
+    }
+    return 0;
+  });
 
   return (
     <div className="App">
       <header className="App-header">
         <h1>Cryptocurrency Tracker</h1>
+        <select
+          onChange={handleSortChange}
+          value={sortOrder}
+          className="sort-select"
+        >
+          <option value="market_cap_desc">Sort by Market Cap (Desc)</option>
+          <option value="price_desc">Sort by Price (Desc)</option>
+        </select>
+        <input
+          type="text"
+          placeholder="Search cryptocurrencies..."
+          onChange={handleSearchChange}
+          className="search-input"
+        />
       </header>
       <div className="crypto-container">
-        {cryptoData.map((crypto) => (
+        {sortedCryptoData.map((crypto) => (
           <div key={crypto.id} className="crypto-card">
             <h2>{crypto.name}</h2>
             <p>Current Price: ${crypto.current_price.toLocaleString()}</p>
             <p>Market Cap: ${crypto.market_cap.toLocaleString()}</p>
+            <p>24h Volume: ${crypto.total_volume.toLocaleString()}</p>
             <p
               className={
                 crypto.price_change_percentage_24h > 0 ? "positive" : ""
