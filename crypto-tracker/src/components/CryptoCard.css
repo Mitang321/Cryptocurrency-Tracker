@@ -74,3 +74,33 @@
 .crypto-card button:hover {
   background-color: #218838;
 }
+.crypto-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+}
+
+.crypto-card h2 {
+  margin: 0 0 10px;
+}
+
+.crypto-card p {
+  margin: 5px 0;
+}
+
+.crypto-card .details-link {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #007bff;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.crypto-card .details-link:hover {
+  background-color: #0056b3;
+}

@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./components/Home";
 import CryptoCard from "./components/CryptoCard";
 import CryptoDetails from "./components/CryptoDetails";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
 function App() {
   const [cryptos, setCryptos] = useState([]);
@@ -9,11 +12,15 @@ function App() {
 
   useEffect(() => {
     const fetchCryptos = async () => {
-      const response = await fetch(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"
-      );
-      const data = await response.json();
-      setCryptos(data);
+      try {
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd"
+        );
+        const data = await response.json();
+        setCryptos(data);
+      } catch (error) {
+        console.error("Error fetching cryptocurrency data:", error);
+      }
     };
 
     fetchCryptos();
@@ -28,9 +35,11 @@ function App() {
 
   return (
     <Router>
+      <Navbar />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route
-          path="/"
+          path="/cryptos"
           element={cryptos.map((crypto) => (
             <CryptoCard
               key={crypto.id}
@@ -42,6 +51,7 @@ function App() {
         />
         <Route path="/crypto/:id" element={<CryptoDetails />} />
       </Routes>
+      <Footer />
     </Router>
   );
 }
