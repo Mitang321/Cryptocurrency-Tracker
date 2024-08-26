@@ -1,5 +1,10 @@
 # Cryptocurrency Traking App
 
+## Live Preview
+
+[Live Preview](https://cryptocurrency-tracker-chi.vercel.app/)
+
+
 ## Description
 
 This app provides a platform to view and track cryptocurrencies.
